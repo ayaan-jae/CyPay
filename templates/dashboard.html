@@ -1,0 +1,83 @@
+{% extends "base.html" %}{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="dash">
+    <div class="dash-header">
+        <div>
+            <h1>Welcome, {{ user.name }}</h1>
+            <span style="color:var(--text2);font-size:.85rem">SRN: {{ user.srn }} · <span class="pulse green"></span> Session Active</span>
+        </div>
+        <a href="{{ url_for('cy.transfer') }}" class="btn btn-primary">Send Money</a>
+    </div>
+
+    <div class="stats">
+        <div class="card stat">
+            <div class="value" style="color:var(--accent)">₹{{ "%.2f"|format(user.balance) }}</div>
+            <div class="label">Balance</div>
+        </div>
+        <div class="card stat">
+            <div class="value" style="color:{{ risk_color }}">{{ risk_score }}</div>
+            <div class="label">Risk Score</div>
+        </div>
+        <div class="card stat">
+            <div class="risk-badge" style="color:{{ risk_color }}">
+                <span class="pulse" style="background:{{ risk_color }}"></span>{{ risk_level }}
+            </div>
+            <div class="label" style="margin-top:.6rem">Threat Level</div>
+        </div>
+        <div class="card stat">
+            <div class="value" style="color:var(--accent2)">{{ response.decision }}</div>
+            <div class="label">Adaptive Response</div>
+        </div>
+    </div>
+
+    <!-- ADD FUNDS -->
+    <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-header">Add Funds</div>
+        <form method="POST" action="{{ url_for('cy.add_funds') }}" style="display:flex;gap:.8rem;align-items:end;flex-wrap:wrap">
+            <div class="form-group" style="flex:1;margin:0"><label>Amount (₹)</label><input name="amount" type="number" step="0.01" min="1" required placeholder="500"></div>
+            <button type="submit" class="btn btn-primary" style="height:42px">Add Funds</button>
+        </form>
+    </div>
+
+    <!-- TRANSACTIONS -->
+    <div class="card" style="margin-bottom:1.5rem">
+        <div class="card-header">Transaction History</div>
+        <div class="table-wrap"><table>
+            <thead><tr><th>Time</th><th>Description</th><th>Amount</th><th>Risk</th></tr></thead>
+            <tbody>
+            {% for t in txns %}
+            <tr>
+                <td class="mono" style="font-size:.78rem;color:var(--text2)">{{ t.timestamp.strftime('%d %b %H:%M') }}</td>
+                <td>{{ t.description }}</td>
+                <td class="mono" style="color:{% if t.amount > 0 %}var(--success){% else %}var(--danger){% endif %}">{% if t.amount > 0 %}+{% endif %}₹{{ "%.2f"|format(t.amount) }}</td>
+                <td><span class="risk-badge" style="color:{{ risk_color }}">{{ t.risk_score|round(1) }}</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" style="text-align:center;color:var(--text2)">No transactions yet</td></tr>
+            {% endfor %}
+            </tbody>
+        </table></div>
+    </div>
+
+    <!-- FORENSIC LOGS -->
+    <div class="card">
+        <div class="card-header">Forensic Log (Your Events)</div>
+        <div class="table-wrap"><table>
+            <thead><tr><th>Time</th><th>Event</th><th>Risk</th><th>Level</th><th>Response</th></tr></thead>
+            <tbody>
+            {% for l in logs %}
+            <tr>
+                <td class="mono" style="font-size:.75rem;color:var(--text2)">{{ l.timestamp_utc.strftime('%H:%M:%S.%f')[:12] }}</td>
+                <td><span class="mono" style="font-size:.8rem">{{ l.event_type }}</span></td>
+                <td class="mono">{{ l.risk_score }}</td>
+                <td><span class="risk-badge" style="font-size:.7rem;color:{% if l.risk_level=='LOW' %}var(--success){% elif l.risk_level=='MEDIUM' %}var(--warn){% elif l.risk_level=='HIGH' %}var(--purple){% else %}var(--danger){% endif %}">{{ l.risk_level }}</span></td>
+                <td style="font-size:.78rem;color:var(--text2)">{{ l.response_taken or '—' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" style="text-align:center;color:var(--text2)">No events recorded</td></tr>
+            {% endfor %}
+            </tbody>
+        </table></div>
+    </div>
+</div>
+{% endblock %}

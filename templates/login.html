@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block title %}Login{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h2>Authenticate</h2>
+    <p class="subtitle">Enter your SRN to begin biometric identity verification.</p>
+    <form method="POST" class="card">
+        <div class="form-group"><label>SRN</label><input name="srn" required placeholder="R23DC049" autofocus></div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Verify Identity →</button>
+    </form>
+    <p style="text-align:center;margin-top:1.5rem;color:var(--text2);font-size:.85rem">Don't have an account? <a href="{{ url_for('cy.register') }}">Register here</a></p>
+</div>
+{% endblock %}

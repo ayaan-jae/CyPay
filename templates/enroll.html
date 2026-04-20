@@ -1,0 +1,37 @@
+{% extends "base.html" %}{% block title %}Face Enrollment{% endblock %}
+{% block content %}
+<div class="form-page">
+    <h2>Enroll Biometric</h2>
+    <p class="subtitle">Capture your face to build an identity vector for <strong>{{ user.name }}</strong> ({{ user.srn }}).</p>
+    <div class="card">
+        <div class="camera-box">
+            <video id="cam" autoplay playsinline></video>
+            <canvas id="snap"></canvas>
+            <div class="scan-line"></div>
+            <div class="camera-overlay">
+                <div class="corner tl"></div><div class="corner tr"></div>
+                <div class="corner bl"></div><div class="corner br"></div>
+            </div>
+        </div>
+        <p id="status" style="text-align:center;margin:1rem 0;color:var(--text2);font-size:.85rem">Position your face in the frame</p>
+        <button id="captureBtn" class="btn btn-primary" style="width:100%;justify-content:center" onclick="capture()">Capture & Enroll</button>
+    </div>
+</div>
+<script>
+const video=document.getElementById('cam'),canvas=document.getElementById('snap'),status=document.getElementById('status');
+navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480}}).then(s=>{video.srcObject=s}).catch(()=>status.textContent='Camera access denied');
+function capture(){
+    status.textContent='Processing...';status.style.color='var(--accent)';
+    canvas.width=video.videoWidth;canvas.height=video.videoHeight;
+    canvas.getContext('2d').drawImage(video,0,0);
+    canvas.toBlob(b=>{
+        const fd=new FormData();fd.append('image',b,'face.jpg');
+        fetch('{{ url_for("cy.enroll_face", uid=user.id) }}',{method:'POST',body:fd})
+        .then(r=>r.json()).then(d=>{
+            if(d.success){status.textContent='✓ '+d.success;status.style.color='var(--accent)';setTimeout(()=>window.location='/login',1500)}
+            else{status.textContent='✗ '+d.error;status.style.color='var(--danger)'}
+        }).catch(()=>{status.textContent='Network error';status.style.color='var(--danger)'})
+    },'image/jpeg',0.9)
+}
+</script>
+{% endblock %}

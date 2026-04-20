@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>{% block title %}CyPay{% endblock %} | Zero-Trust Identity Shield</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <nav class="nav">
+        <a href="{{ url_for('cy.index') }}" class="nav-brand">
+            <span class="shield"></span><span>CyPay</span>
+        </a>
+        <div class="nav-links">
+            {% if session.get('user_id') %}
+            <a href="{{ url_for('cy.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('cy.transfer') }}">Transfer</a>
+            <a href="{{ url_for('cy.security_dashboard') }}">Security</a>
+            <a href="{{ url_for('cy.logout') }}" class="btn btn-outline btn-sm">Logout</a>
+            {% else %}
+            <a href="{{ url_for('cy.login') }}">Login</a>
+            <a href="{{ url_for('cy.register') }}" class="btn btn-primary btn-sm">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+    <div style="max-width:600px;margin:1rem auto;padding:0 1.5rem">
+        <div class="flash {{ cat }}">{{ msg }}</div>
+    </div>
+    {% endfor %}{% endwith %}
+    {% block content %}{% endblock %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            VANTA.GLOBE({
+                el: "body",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                scale: 1.00,
+                scaleMobile: 1.00,
+                color: 0xff0000,      /* Red */
+                color2: 0xff0000,     /* Red */
+                backgroundColor: 0xeaeaea, /* Distinct off-white */
+                size: 0.8 /* Zoomed out */
+            })
+        });
+    </script>
+</body>
+
+</html>

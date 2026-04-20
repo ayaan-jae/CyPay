@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>Continuous Identity.<br><span>Zero Trust.</span></h1>
+    <p>CyPay treats every transaction as a potential attack. Multi-signal biometric verification, real-time threat scoring, and forensic-grade logging — protecting financial identity in the modern adversarial landscape.</p>
+    <div class="hero-actions">
+        <a href="{{ url_for('cy.register') }}" class="btn btn-primary">Get Started →</a>
+        <a href="{{ url_for('cy.login') }}" class="btn btn-outline">Sign In</a>
+    </div>
+</section>
+{% endblock %}

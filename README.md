@@ -64,7 +64,7 @@ The frontend provides a modern, responsive UI with 3D visualization (Vanta.js We
 
 **1. Clone the Repository**
 ```bash
-git clone https://github.com/ayaaan-sec/CyPay.git
+git clone https://github.com/ayaan-jae/CyPay.git
 cd CyPay
 ```
 
@@ -254,7 +254,7 @@ For detailed testing procedures, see `TESTING.md`.
 
 CyPay Core is provided under the **MIT License**. See the [LICENSE](LICENSE) file for full details.
 
-Copyright (c) 2025 Ayaan Jaffar (https://github.com/ayaaan-sec)
+Copyright (c) 2025 Ayaan Jaffar (https://github.com/ayaan-jae)
 
 ### Important Disclaimer
 
